@@ -1,13 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anoop | Racing Game</title>
-    <link rel="icon">
-</head>
-<body>
-    
-</body>
-</html>
+  <head>
+    <meta charset="UTF-8" />
+
+
+
+    <title>ANR | Dash</title>
+<link rel="icon" href="Logo.jpeg">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+    />
+
+    <style>
+      body {
+        background: #222;
+        font-family: "Press Start 2P", monospace;
+        font-smooth: never;
+        height: 98vh;
+      }
+
+      /* UI */
+      .topUI {
+        position: absolute;
+        z-index: 1000; /* need this cause clip-path changes stack context */
+        transform: translate(-50%, 25px);
+        text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+        letter-spacing: 2px;
+        color: #fff;
+        font-size: 17px;
+      }
+      .topUI::before {
+        display: inline-block;
+        height: 17px;
+        padding: 1px 2px;
+        line-height: 19px;
+        font-size: 17px;
+        background: #fff;
+        text-shadow: none;
+        font-weight: 900;
+        letter-spacing: 0;
+        border-radius: 6px;
+        margin-right: 30px;
+        border: 2px solid #7dd8c9;
+      }
+      #time {
+        left: 13%;
+        color: #f4f430;
+      }
+      #time::before {
+        content: "TIME";
+        color: #f57214;
+      }
+      #score {
+        left: 45%;
+      }
+      #score::before {
+        content: "SCORE";
+        color: #a61a9d;
+      }
+      #lap {
+        left: 88%;
+        width: 45%;
+      }
+      #lap::before {
+        content: "LAP";
+        color: #0082df;
+      }
+
+      #tacho {
+        position: absolute;
+        text-align: right;
+        width: 23%;
+        bottom: 5%;
+        z-index: 2000;
+        color: #e62e13;
+        text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+        letter-spacing: 2px;
+        font-size: 23px;
+      }
+      #tacho::after {
+        content: "km/h";
+        color: #fab453;
+        font-size: 18px;
+        margin-left: 5px;
+      }
+
