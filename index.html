@@ -306,3 +306,193 @@ ASSETS
         },
       };
 
+/*
+
+HELPER FUNCTIONS   
+
+*/
+
+Number.prototype.pad = function (numZeros, char = 0) {
+        let n = Math.abs(this);
+        let zeros = Math.max(0, numZeros - Math.floor(n).toString().length);
+        let zeroString = Math.pow(10, zeros)
+          .toString()
+          .substr(1)
+          .replace(0, char);
+        return zeroString + n;
+      };
+
+      Number.prototype.clamp = function (min, max) {
+        return Math.max(min, Math.min(this, max));
+      };
+
+      const timestamp = (_) => new Date().getTime();
+      const accelerate = (v, accel, dt) => v + accel * dt;
+      const isCollide = (x1, w1, x2, w2) => (x1 - x2) ** 2 <= (w2 + w1) ** 2;
+
+      function getRand(min, max) {
+        return (Math.random() * (max - min) + min) | 0;
+      }
+
+      function randomProperty(obj) {
+        let keys = Object.keys(obj);
+        return obj[keys[(keys.length * Math.random()) << 0]];
+      }
+
+      function drawQuad(element, layer, color, x1, y1, w1, x2, y2, w2) {
+        element.style.zIndex = layer;
+        element.style.background = color;
+        element.style.top = y2 + `px`;
+        element.style.left = x1 - w1 / 2 - w1 + `px`;
+        element.style.width = w1 * 3 + `px`;
+        element.style.height = y1 - y2 + `px`;
+
+        let leftOffset = w1 + x2 - x1 + Math.abs(w2 / 2 - w1 / 2);
+        element.style.clipPath = `polygon(${leftOffset}px 0, ${
+          leftOffset + w2
+        }px 0, 66.66% 100%, 33.33% 100%)`;
+      }
+
+      const KEYS = {};
+      const keyUpdate = (e) => {
+        KEYS[e.code] = e.type === `keydown`;
+        e.preventDefault();
+      };
+      addEventListener(`keydown`, keyUpdate);
+      addEventListener(`keyup`, keyUpdate);
+
+      function sleep(ms) {
+        return new Promise(function (resolve, reject) {
+          setTimeout((_) => resolve(), ms);
+        });
+      }
+
+/*
+
+OBJECTS
+
+*/
+
+      class Line {
+        constructor() {
+          this.x = 0;
+          this.y = 0;
+          this.z = 0;
+
+          this.X = 0;
+          this.Y = 0;
+          this.W = 0;
+
+          this.curve = 0;
+          this.scale = 0;
+
+          this.elements = [];
+          this.special = null;
+        }
+
+        project(camX, camY, camZ) {
+          this.scale = camD / (this.z - camZ);
+          this.X = (1 + this.scale * (this.x - camX)) * halfWidth;
+          this.Y = Math.ceil(((1 - this.scale * (this.y - camY)) * height) / 2);
+          this.W = this.scale * roadW * halfWidth;
+        }
+
+        clearSprites() {
+          for (let e of this.elements) e.style.background = "transparent";
+        }
+
+        drawSprite(depth, layer, sprite, offset) {
+          let destX = this.X + this.scale * halfWidth * offset;
+          let destY = this.Y + 4;
+          let destW = (sprite.width * this.W) / 265;
+          let destH = (sprite.height * this.W) / 265;
+
+          destX += destW * offset;
+          destY += destH * -1;
+
+          let obj = layer instanceof Element ? layer : this.elements[layer + 6];
+          obj.style.background = `url('${sprite.src}') no-repeat`;
+          obj.style.backgroundSize = `${destW}px ${destH}px`;
+          obj.style.left = destX + `px`;
+          obj.style.top = destY + `px`;
+          obj.style.width = destW + `px`;
+          obj.style.height = destH + `px`;
+          obj.style.zIndex = depth;
+        }
+      }
+
+      class Car {
+        constructor(pos, type, lane) {
+          this.pos = pos;
+          this.type = type;
+          this.lane = lane;
+
+          var element = document.createElement("div");
+          road.appendChild(element);
+          this.element = element;
+        }
+      }
+
+      class Audio {
+        constructor() {
+          this.audioCtx = new AudioContext();
+
+          // volume
+          this.destination = this.audioCtx.createGain();
+          this.volume = 1;
+          this.destination.connect(this.audioCtx.destination);
+
+          this.files = {};
+
+          let _self = this;
+          this.load(ASSETS.AUDIO.theme, "theme", function (key) {
+            let source = _self.audioCtx.createBufferSource();
+            source.buffer = _self.files[key];
+
+            let gainNode = _self.audioCtx.createGain();
+            gainNode.gain.value = 0.6;
+            source.connect(gainNode);
+            gainNode.connect(_self.destination);
+
+            source.loop = true;
+            source.start(0);
+          });
+        }
+
+        get volume() {
+          return this.destination.gain.value;
+        }
+
+        set volume(level) {
+          this.destination.gain.value = level;
+        }
+
+        play(key, pitch) {
+          if (this.files[key]) {
+            let source = this.audioCtx.createBufferSource();
+            source.buffer = this.files[key];
+            source.connect(this.destination);
+            if (pitch) source.detune.value = pitch;
+            source.start(0);
+          } else this.load(key, () => this.play(key));
+        }
+
+        load(src, key, callback) {
+          let _self = this;
+          let request = new XMLHttpRequest();
+          request.open("GET", src, true);
+          request.responseType = "arraybuffer";
+          request.onload = function () {
+            _self.audioCtx.decodeAudioData(
+              request.response,
+              function (beatportBuffer) {
+                _self.files[key] = beatportBuffer;
+                callback(key);
+              },
+              function () {}
+            );
+          };
+          request.send();
+        }
+      }
+
