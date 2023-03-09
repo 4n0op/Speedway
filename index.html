@@ -184,3 +184,125 @@ HOME
         }
       }
 
+/*
+
+GUIDE
+
+*/
+#controls {
+        color: #868686;
+        font-size: 13px;
+        line-height: 13px;
+        margin: 10px;
+        text-align: center;
+      }
+      #controls > span {
+        margin-left: 20px;
+      }
+      #controls > span > span {
+        border: 2px solid #868686;
+        border-radius: 5px;
+        padding: 7px;
+        margin-right: 10px;
+        display: inline-block;
+      }
+      #controls > span:last-child > span {
+        transform: rotate(90deg);
+      }
+    </style>
+
+    <script>
+      window.console = window.console || function (t) {};
+    </script>
+
+    <script>
+      if (document.location.search.match(/type=embed/gi)) {
+        window.parent.postMessage("resize", "*");
+      }
+    </script>
+  </head>
+
+  <body translate="no">
+    <div id="game">
+      <div id="road">
+        <div id="cloud"></div>
+        <div id="hero"></div>
+      </div>
+
+      <div id="hud">
+        <span id="time" class="topUI">0</span>
+        <span id="score" class="topUI">0</span>
+        <span id="lap" class="topUI">0'00"000</span>
+        <span id="tacho">0</span>
+      </div>
+
+      <div id="home">
+        <h1>Dash</h1>
+        <p id="text"></p>
+
+        <div id="highscore"></div>
+      </div>
+    </div>
+
+    <div id="controls">
+      <span><span>C</span>insert coin</span>
+      <span><span>M</span>mute</span>
+      <span><span>&lt;</span><span>&gt;</span>move</span>
+      <span><span>&lt;</span><span>&gt;</span>accelerate</span>
+    </div>
+    <script src="javascript/1.js"></script>
+
+    <script id="rendered-js">
+/*
+
+ASSETS
+
+*/
+      const ASSETS = {
+        COLOR: {
+          TAR: ["#959298", "#9c9a9d"],
+          RUMBLE: ["#959298", "#f5f2f6"],
+          GRASS: ["#eedccd", "#e6d4c5"],
+        },
+
+        IMAGE: {
+          TREE: {
+            src: "images/tree.png",
+            width: 132,
+            height: 192,
+          },
+
+          HERO: {
+            src: "images/hero.png",
+            width: 110,
+            height: 56,
+          },
+
+          CAR: {
+            src: "images/car04.png",
+            width: 50,
+            height: 36,
+          },
+
+          FINISH: {
+            src: "images/finish.png",
+            width: 339,
+            height: 180,
+            offset: -0.5,
+          },
+
+          SKY: {
+            src: "images/cloud.jpg",
+          },
+        },
+
+        AUDIO: {
+          theme:
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/theme.mp3",
+          engine:
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/engine.wav",
+          honk: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/honk.wav",
+          beep: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/beep.wav",
+        },
+      };
+
